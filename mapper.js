@@ -2,6 +2,7 @@
 * Simple leaflet wrapper using openstreetmaps
 */
 
+
 class Mapper {
     constructor(lat=0, long=0, zoom=0, marker_list=[]) {
         // Inital map settings
@@ -67,14 +68,14 @@ class Mapper {
         }
         // Create leaflet map
         this.map = L.map(this.map_display_div_id).setView([this.lat, this.long], this.zoom);
-        var layer = new L.TileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        var layer = new L.TileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         });
         this.map.addLayer(layer);
         // If there is a list of markers avalible add them
         if ( this.marker_list.length > 0 ) 
         {
-            this.add_marker_list(this.marker_list);
+            this.#add_marker_list(this.marker_list);
         }
         
     }
@@ -116,22 +117,19 @@ class Mapper {
         * Add markers to current map
         */
         for (let i = 0; i < marker_list.length; i++) {
-            var mark;
             // If marker is defined as a list [lat, long]
             if ( Array.isArray(marker_list[i]) ) {
-                mark = this.#add_marker(marker_list[i][0], marker_list[i][1]);
+                this.#add_marker(marker_list[i][0], marker_list[i][1]);
             }
             // Otherwise marker is an object {"lat":float,"long":float}
             else {
-                mark = this.#add_marker(marker_list[i].lat, marker_list[i].long);
+                this.#add_marker(marker_list[i].lat, marker_list[i].long);
             }
-            // Add marker
-            mark.addTo(this.map);
         }
     }
     add_marker_list(marker_list) {
         this.leaf_script.onload = () => {
-            this.add_marker_list(marker_list)
+            this.#add_marker_list(marker_list)
         }
     }
     #draw_from_json(json_string) {
@@ -147,7 +145,7 @@ class Mapper {
         this.zoom = map_conf.position.zoom;
 
         // Draw the map
-        this.draw_map();
+        this.#draw_map();
 
         // Add markers to map
         if ( map_conf.markers.length > 0 )
